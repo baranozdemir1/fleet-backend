@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SocialMediaPlatforms {
+  FACEBOOK
+  INSTAGRAM
+  LINKEDIN
+  TWITTER
+  YOUTUBE
+  TIKTOK
+  PINTEREST
+  SNAPCHAT
+  REDDIT
+  WHATSAPP
+  TELEGRAM
+  DISCORD
+  MEDIUM
+  GITHUB
+  STACKOVERFLOW
+  BEHANCE
+  DRIBBLE
+  VIMEO
+  SOUNDCLOUD
+  SPOTIFY
+  APPLE_MUSIC
+  GOOGLE_PLAY_MUSIC
+  AMAZON_MUSIC
+  DEEZER
+  TIDAL
+  BANDCAMP
+}
+
+model User {
+  id             String          @id @unique @default(uuid())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  displayName    String?
+  realName       String?
+  phone          String?
+  email          String          @unique
+  password       String
+  biography      String?
+  livesIn        String?
+  speakLanguage  String?
+  avatarImgUrl   String?
+  verified       Boolean         @default(false)
+  coverImgUrl    String?
+  website        String?
+  socialMedia    SocialMedia[]
+  paymentMethods PaymentMethod[]
+  notifications  Notification[]
+}
+
+model SocialMedia {
+  id       Int                  @id @unique @default(autoincrement())
+  userId   String
+  user     User                 @relation(fields: [userId], references: [id])
+  platform SocialMediaPlatforms
+  link     String
+}
+
+model PaymentMethod {
+  id      Int    @id @unique @default(autoincrement())
+  userId  String
+  user    User   @relation(fields: [userId], references: [id])
+  type    String
+  details Json
+}
+
+model Notification {
+  id        Int      @id @unique @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  read      Boolean  @default(false)
+}
